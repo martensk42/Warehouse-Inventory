@@ -1,0 +1,71 @@
+----gets the information for to check the login for a user
+SELECT *
+FROM `Client`
+WHERE name = $business
+AND password = $password;
+
+----inserts a new row for newly registered user
+INSERT INTO `Client` (`name`, `password`, `phone_num`, `address`,
+						`city`, `state`, `country`, `postal_code`)
+VALUES ($businessString, $password, $phone_num, $address,
+		$city, $state, $country, $postal_code);
+
+----gets all the businesses that are in the database
+SELECT businessID
+FROM `Client`
+WHERE name = $businessString;
+
+----gets the inventory items for use to order more
+SELECT i.item_id, i.description, i.manufacturer, i.unit_price, w.quantity_on_hand
+FROM  `Item` i
+JOIN  `Warehouse_has_Item` wi ON wi.Item_item_id = i.item_id
+JOIN  `Warehouse` w ON w.item_id = wi.Warehouse_item_id
+GROUP BY i.item_id;
+
+----gets all the items in the inventory
+SELECT i.item_id, i.description, i.manufacturer, i.unit_price, w.quantity_on_hand
+FROM  `Item` i
+JOIN  `Warehouse_has_Item` wi ON wi.Item_item_id = i.item_id
+JOIN  `Warehouse` w ON w.item_id = wi.Warehouse_item_id
+GROUP BY i.item_id;
+
+----gets all the clients that are in the database
+SELECT business_id, name
+FROM  `Client`;
+
+----gets all the orders for the admin user
+SELECT o.order_id, i.item_id, i.description, i.manufacturer, i.unit_price, w.quantity_on_hand
+FROM  `Client` c
+JOIN  `Order` o ON o.business_id = c.business_id
+JOIN  `Order_has_Item` oi ON oi.order_id = o.order_id
+JOIN  `Item` i ON i.item_id = oi.item_id
+JOIN  `Warehouse_has_Item` wi ON wi.Item_item_id = i.item_id
+JOIN  `Warehouse` w ON w.item_id = wi.Warehouse_item_id
+WHERE c.name = $business;
+
+----gets all the orders for the user
+SELECT o.order_id, i.item_id, i.description, i.manufacturer, i.unit_price, oi.quantity
+FROM  `Client` c
+JOIN  `Order` o ON o.business_id = c.business_id
+JOIN  `Order_has_Item` oi ON oi.order_id = o.order_id
+JOIN  `Item` i ON i.item_id = oi.item_id
+WHERE c.name = $business
+ORDER BY o.order_id ASC;
+
+----inserts values for a new order
+INSERT INTO `Order` (`business_id`, `order_date`, `delivery_date`, `will_call`)
+VALUES ($businessString, $orderDateString, $deliveryDateString, $willCall);
+
+----gets the order id for a newly submitted order
+SELECT order_id
+FROM `Order`
+WHERE order_date = $orderDateString;
+
+----inserts the items from the order 
+INSERT INTO `Order_has_Item` (`item_id`, `order_id`, `quantity`)
+VALUES ($item, $oid, $quantity);
+
+----updates the warehouse's inventory to account for the new order
+UPDATE `Warehouse`
+SET quantity_on_hand = quantity_on_hand - $quantity
+WHERE `Warehouse`.item_id = $item;

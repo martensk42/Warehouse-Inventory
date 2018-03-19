@@ -1,0 +1,46 @@
+/*
+This file defines the styles for the webpages in css.
+*/
+#content {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 100px;
+}
+
+#banner {
+	text-align: center;
+}
+
+#logout {
+	float: right;
+}
+
+#controls {
+	float: left;
+	width: 20%;
+	padding-right: 50px;
+	padding-left: 10px;
+	margin-top: 80px;
+}
+
+#outputarea {
+	width: 50%;
+	margin: auto;
+	text-align: center;
+	display: block;
+	clear: both;
+}
+
+h1 {
+	margin-bottom: 0; 
+}
+
+td:nth-child(2){
+	padding-left: 2em;
+	padding-right: 2em;
+}
+
+tr:nth-child(even){
+	background-color: #dad9d4;
+}
